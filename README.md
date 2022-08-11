@@ -49,5 +49,5 @@ FireLibrary is a web application that will simulate a full library portal. Custo
 
 [Entity Relationship Diagram][ERD]
 
-[ERD]: https://raw.githubusercontent.com/jdelacruz96/ProjectFire/main/LibraryERD.png
+[ERD]: https://raw.githubusercontent.com/220705-UTA-NET/FireLibraryV2/dev/LibraryERD.png
 
