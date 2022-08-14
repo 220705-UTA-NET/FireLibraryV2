@@ -12,9 +12,11 @@ using FireLibrary2.DTOs;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Cors;
 
 namespace FireLibrary2.Controllers
 {
+    [EnableCors("_myAllowSpecificOrigins")]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersControllerTest : ControllerBase

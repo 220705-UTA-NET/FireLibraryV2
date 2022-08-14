@@ -7,139 +7,144 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FireLibrary2.DTOs;
 using FireLibrary2.Models;
+using Microsoft.AspNetCore.Cors;
 
 namespace FireLibrary2.Controllers
 {
+    [EnableCors("_myAllowSpecificOrigins")]
     [Route("api/[controller]")]
     [ApiController]
     public class BooksController : ControllerBase
     {
-        private readonly DataContext _context;
+        public readonly IRepository _repo;
+        private readonly ILogger<BooksController> _logger;
 
-        public BooksController(DataContext context)
+        public BooksController(IRepository repo, ILogger<BooksController> logger)
         {
-            _context = context;
+            _repo = repo;
+            _logger = logger;
         }
 
         // GET: api/Books
         [HttpGet]
         public async Task<ActionResult<List<BookDTO>>> GetBooks()
         {
-            if (_context.Books == null)
-            {
-                return NotFound();
-            }
 
-            List<Book> books = await _context.Books.ToListAsync();
             List<BookDTO> result = new();
 
-            result = BookDTO.CreateBookDTOs(books);
-
-            if (books == null)
+            try
             {
-                return NotFound();
+                result = await _repo.GetAllBooksAsync();
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
             }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                return StatusCode(500);
+            }
+
 
             return result;
         }
 
         // GET: api/Books/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<BookDTO>> GetBook(string id)
+        [HttpGet("search/isbn")]
+        public async Task<ActionResult<BookDTO>> GetBook(string isbn)
         {
-            if (_context.Books == null)
-            {
-                return NotFound();
-            }
-            var book = await _context.Books.FindAsync(id);
             BookDTO result = new();
 
-            result = BookDTO.CreateBookDTO(book);
-
-            if (book == null)
+            try
             {
-                return NotFound();
+                result = await _repo.GetBookAsync(isbn);
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                return StatusCode(500);
             }
 
             return result;
         }
 
         [HttpGet("search/genre")]
-        public async Task<ActionResult<List<BookDTO>>> SearchBooksGenre([FromQuery] string filter)
+        public async Task<ActionResult<List<BookDTO>>> SearchBooksGenre(string genre)
         {
-            if (_context.Books == null)
+            List<BookDTO> result = new();
+
+            try
             {
-                return NotFound();
+                result = await _repo.SearchBooksGenreAsync(genre.ToLower());
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                return StatusCode(500);
             }
 
-
-            List<BookDTO> result = new List<BookDTO>();
-            List<Book> books = new List<Book>();
-
-            books = await _context.Books.Where(b => b.Genre.ToLower() == filter).ToListAsync();
-
-            result = BookDTO.CreateBookDTOs(books);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
 
             return result;
         }
 
         [HttpGet("search/author")]
-        public async Task<ActionResult<List<BookDTO>>> SearchBooksAuthor([FromQuery] string filter)
+        public async Task<ActionResult<List<BookDTO>>> SearchBooksAuthor(string author)
         {
-            if (_context.Books == null)
-            {
-                return NotFound();
-            }
-
-
             List<BookDTO> result = new List<BookDTO>();
-            List<Book> books = new List<Book>();
 
-            books = await _context.Books.Where(b => b.AuthorName.ToLower() == filter).ToListAsync();
-
-            result = BookDTO.CreateBookDTOs(books);
-
-            if (result == null)
+            try
             {
-                return NotFound();
+                result = await _repo.SearchBooksGenreAsync(author.ToLower());
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                return StatusCode(500);
             }
 
             return result;
         }
 
         [HttpGet("search/title")]
-        public async Task<ActionResult<List<BookDTO>>> SearchBooks([FromQuery] string filter)
+        public async Task<ActionResult<List<BookDTO>>> SearchBooksTitle(string title)
         {
-            if (_context.Books == null)
-            {
-                return NotFound();
-            }
-
-            filter.ToLower();
-
             List<BookDTO> result = new List<BookDTO>();
-            List<Book> books = new List<Book>();
 
-            books = await _context.Books.Where(b => b.Title.ToLower() == filter).ToListAsync();
-
-            result = BookDTO.CreateBookDTOs(books);
-
-            if (result == null)
+            try
             {
-                return NotFound();
+                result = await _repo.SearchBooksGenreAsync(title.ToLower());
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                return StatusCode(500);
             }
 
             return result;
         }
 
-        private bool BookExists(string id)
-        {
-            return (_context.Books?.Any(e => e.Isbn == id)).GetValueOrDefault();
-        }
+
     }
 }

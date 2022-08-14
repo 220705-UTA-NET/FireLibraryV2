@@ -7,90 +7,57 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FireLibrary2.Models;
 using FireLibrary2.DTOs;
+using Microsoft.AspNetCore.Cors;
 
 namespace FireLibrary2.Controllers
 {
+    [EnableCors("_myAllowSpecificOrigins")]
     [Route("api/Orders")]
     [ApiController]
     public class OrderController : ControllerBase
     {
-        private readonly DataContext _context;
+        public readonly IRepository _repo;
+        private readonly ILogger<OrderController> _logger;
 
-        public OrderController(DataContext context)
+        public OrderController(IRepository repo, ILogger<OrderController> logger)
         {
-            _context = context;
+            _repo = repo;
+            _logger = logger;
         }
 
 
 
         [HttpPost] //takes an order DTO, creates an order.
-        public async Task<ActionResult<string>> PostOrder(OrderDTO request)
+        public async Task<ActionResult> PostOrder(OrderDTO request)
         {
-            //checks if the table is still there
-            if (_context.Orders == null)
-            {
-                return Problem("Entity set 'DataContext.Orders'  is null.");
-            }
-
-            //New Order to insert into DB
-            var order = new Order();
-            var books = new List<Book>();
-            //Finds customer that came in from the OrderDTO customerID, returns its Customer Model from the DB
-            var customer = await _context.Customers.FirstAsync(cust => cust.CustomerId == request.CustomerId);
-
-            //checking if order would put user over 10 borrowed books
-            if ((customer.BookCount + request.Books.Count()) > 10)
-            {
-                return Problem($"You are borrowing {customer.BookCount}/10 alloted books. Please alter your cart and try again!");
-            }
-
-            //checking to see if there are duplicate books on the order
-            if (request.Books.Count() != request.Books.Distinct().Count())
-            {
-                return Problem("Please remove duplicates from order.");
-            }
-
-            //Sets customerId of new order to the CustomerId that came in from the DTO
-            order.CustomerId = request.CustomerId;
-
-            //Puts book found in BookDTO list into a list of book models stored in the object model,
-            //to then send to database. Additionally, it updates the books and decrements
-            //the available copies by 1.
-            foreach (BookDTO i in request.Books)
-            {
-                //finds book in DB
-                var book = await _context.Books.FindAsync(i.Isbn);
-
-                //Makes sure there are availble copies of the book
-                if (book.AvalableCopies == 0)
-                {
-                    return Problem($"{book.Title} is currently unavailable, sorry about that!");
-                }
-
-
-                //Adds the book to the List<Book> that we will insert into the new order
-                books.Add(book);
-            }
-
-            //Populating the Order model
-            order.Books = books;
-            order.DateLent = DateTime.Now;
-            order.DateDue = order.DateLent.AddDays(14);
-
-            //incrementing customer bookcount           
-            customer.BookCount += order.Books.Count();
-
-            //Adding the order model, updating the customer 
-            _context.Orders.Add(order);
-            _context.Customers.Update(customer);
 
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
+                string result = await _repo.PostOrderAsync(request);
 
+                if (result == null)
+                {
+                    return Problem();
+                }
+                else
+                {
+                    switch (result)
+                    {
+                        case "toomany":
+                            return BadRequest("Too many books on this order!");
+                        case "duplicate":
+                            return BadRequest("Please remove duplicate books!");
+                        case "availability":
+                            return BadRequest("One or more books is not available!");
+                        case "success":
+                            return Ok("Order placed!");
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                return StatusCode(500);
             }
 
             return Ok();
@@ -99,24 +66,22 @@ namespace FireLibrary2.Controllers
         [HttpGet] //gets a specific order
         public async Task<ActionResult<OrderDTO>> GetOrder(int id)
         {
-            //Checking if db is still there
-            if (_context.Orders == null)
+            OrderDTO result = new();
+
+            try
             {
-                return NotFound();
+                result = await _repo.GetOrderAsync(id);
+
+                if (result == null)
+                {
+                    return BadRequest("Order not found!");
+                }
             }
-
-            Order order = await _context.Orders.Include(o => o.Books).FirstAsync(o => o.OrderId == id);
-
-
-            OrderDTO result = new OrderDTO();
-
-            result.orderId = order.OrderId;
-
-            List<BookDTO> bookDTOs = new();
-
-            bookDTOs = BookDTO.CreateBookDTOs(order);
-
-            result.Books = bookDTOs;
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                return StatusCode(500);
+            }
 
             return Ok(result);
 
@@ -125,53 +90,19 @@ namespace FireLibrary2.Controllers
         [HttpPost("return/{id}")]
         public async Task<ActionResult> ReturnBooks(OrderDTO request)
         {
-            //checks if the table is still there
-            if (_context.Orders == null)
-            {
-                return Problem("Entity set 'DataContext.Orders'  is null.");
-            }
-
-            //Count of returned books
-            int count = 0;
-            //Get the actual order from the DB
-            Order order = await _context.Orders.FindAsync(request.orderId);
-            //Get custtomer who's order it is
-            Customer customer = await _context.Customers.FindAsync(order.CustomerId);
-            //Cant remove entries in a foreach loop
-            List<Book> booksToRemove = new();
-
-            foreach (var i in order.Books)
-            {
-                //Adds an available copy to the book object in the DB
-                i.AvalableCopies += 1;
-                //Removes a book from the customer's BookCount 
-                customer.BookCount -= 1;
-                //Stages changes to the DB, updating the returned book in the DB to reflect the additional copy available
-                _context.Books.Update(i);
-                //increments the count
-                count += 1;
-                booksToRemove.Add(i);
-            }
-
-            //Removing books to remove from the order book list
-            order.Books = order.Books.Except(booksToRemove).ToList();
-
-            //Stages changes to order and customer to DB
-            _context.Orders.Update(order);
-            _context.Customers.Update(customer);
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _repo.ReturnBooksAsync(request);
             }
-            catch (DbUpdateException)
+            catch (Exception e)
             {
-
+                _logger.LogError(e, e.Message);
             }
 
             //Returns 200OK along with returned book count. 
-            return Ok($"You have returned {count} books!");
+            return Ok($"You have returned {request.Books.Count()} books!");
         }
 
     }
+
 }
