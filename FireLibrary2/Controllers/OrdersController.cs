@@ -5,122 +5,173 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using FireLibrary2.Data;
 using FireLibrary2.Models;
-using Microsoft.AspNetCore.Cors;
+using FireLibrary2.DTOs;
 
 namespace FireLibrary2.Controllers
 {
-    [EnableCors("_myAllowSpecificOrigins")]
-    [Route("api/[controller]")]
+    [Route("api/Orders")]
     [ApiController]
-    public class OrdersController : ControllerBase
+    public class OrderController : ControllerBase
     {
         private readonly DataContext _context;
 
-        public OrdersController(DataContext context)
+        public OrderController(DataContext context)
         {
             _context = context;
         }
 
-        // GET: api/Orders
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
-        {
-          if (_context.Orders == null)
-          {
-              return NotFound();
-          }
-            return await _context.Orders.ToListAsync();
-        }
 
-        // GET: api/Orders/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Order>> GetOrder(int id)
-        {
-          if (_context.Orders == null)
-          {
-              return NotFound();
-          }
-            var order = await _context.Orders.FindAsync(id);
 
-            if (order == null)
+        [HttpPost] //takes an order DTO, creates an order.
+        public async Task<ActionResult<string>> PostOrder(OrderDTO request)
+        {
+            //checks if the table is still there
+            if (_context.Orders == null)
             {
-                return NotFound();
+                return Problem("Entity set 'DataContext.Orders'  is null.");
             }
 
-            return order;
-        }
+            //New Order to insert into DB
+            var order = new Order();
+            var books = new List<Book>();
+            //Finds customer that came in from the OrderDTO customerID, returns its Customer Model from the DB
+            var customer = await _context.Customers.FirstAsync(cust => cust.CustomerId == request.CustomerId);
 
-        // PUT: api/Orders/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrder(int id, Order order)
-        {
-            if (id != order.OrderId)
+            //checking if order would put user over 10 borrowed books
+            if ((customer.BookCount + request.Books.Count()) > 10)
             {
-                return BadRequest();
+                return Problem($"You are borrowing {customer.BookCount}/10 alloted books. Please alter your cart and try again!");
             }
 
-            _context.Entry(order).State = EntityState.Modified;
+            //checking to see if there are duplicate books on the order
+            if (request.Books.Count() != request.Books.Distinct().Count())
+            {
+                return Problem("Please remove duplicates from order.");
+            }
+
+            //Sets customerId of new order to the CustomerId that came in from the DTO
+            order.CustomerId = request.CustomerId;
+
+            //Puts book found in BookDTO list into a list of book models stored in the object model,
+            //to then send to database. Additionally, it updates the books and decrements
+            //the available copies by 1.
+            foreach (BookDTO i in request.Books)
+            {
+                //finds book in DB
+                var book = await _context.Books.FindAsync(i.Isbn);
+
+                //Makes sure there are availble copies of the book
+                if (book.AvalableCopies == 0)
+                {
+                    return Problem($"{book.Title} is currently unavailable, sorry about that!");
+                }
+
+
+                //Adds the book to the List<Book> that we will insert into the new order
+                books.Add(book);
+            }
+
+            //Populating the Order model
+            order.Books = books;
+            order.DateLent = DateTime.Now;
+            order.DateDue = order.DateLent.AddDays(14);
+
+            //incrementing customer bookcount           
+            customer.BookCount += order.Books.Count();
+
+            //Adding the order model, updating the customer 
+            _context.Orders.Add(order);
+            _context.Customers.Update(customer);
 
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateException)
             {
-                if (!OrderExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+
             }
 
-            return NoContent();
+            return Ok();
         }
 
-        // POST: api/Orders
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Order>> PostOrder(Order order)
+        [HttpGet] //gets a specific order
+        public async Task<ActionResult<OrderDTO>> GetOrder(int id)
         {
-          if (_context.Orders == null)
-          {
-              return Problem("Entity set 'DataContext.Orders'  is null.");
-          }
-            _context.Orders.Add(order);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetOrder", new { id = order.OrderId }, order);
-        }
-
-        // DELETE: api/Orders/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOrder(int id)
-        {
+            //Checking if db is still there
             if (_context.Orders == null)
             {
                 return NotFound();
             }
-            var order = await _context.Orders.FindAsync(id);
-            if (order == null)
+
+            Order order = await _context.Orders.Include(o => o.Books).FirstAsync(o => o.OrderId == id);
+
+
+            OrderDTO result = new OrderDTO();
+
+            result.orderId = order.OrderId;
+
+            List<BookDTO> bookDTOs = new();
+
+            bookDTOs = BookDTO.CreateBookDTOs(order);
+
+            result.Books = bookDTOs;
+
+            return Ok(result);
+
+        }
+
+        [HttpPost("return/{id}")]
+        public async Task<ActionResult> ReturnBooks(OrderDTO request)
+        {
+            //checks if the table is still there
+            if (_context.Orders == null)
             {
-                return NotFound();
+                return Problem("Entity set 'DataContext.Orders'  is null.");
             }
 
-            _context.Orders.Remove(order);
-            await _context.SaveChangesAsync();
+            //Count of returned books
+            int count = 0;
+            //Get the actual order from the DB
+            Order order = await _context.Orders.FindAsync(request.orderId);
+            //Get custtomer who's order it is
+            Customer customer = await _context.Customers.FindAsync(order.CustomerId);
+            //Cant remove entries in a foreach loop
+            List<Book> booksToRemove = new();
 
-            return NoContent();
+            foreach (var i in order.Books)
+            {
+                //Adds an available copy to the book object in the DB
+                i.AvalableCopies += 1;
+                //Removes a book from the customer's BookCount 
+                customer.BookCount -= 1;
+                //Stages changes to the DB, updating the returned book in the DB to reflect the additional copy available
+                _context.Books.Update(i);
+                //increments the count
+                count += 1;
+                booksToRemove.Add(i);
+            }
+
+            //Removing books to remove from the order book list
+            order.Books = order.Books.Except(booksToRemove).ToList();
+
+            //Stages changes to order and customer to DB
+            _context.Orders.Update(order);
+            _context.Customers.Update(customer);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+
+            }
+
+            //Returns 200OK along with returned book count. 
+            return Ok($"You have returned {count} books!");
         }
 
-        private bool OrderExists(int id)
-        {
-            return (_context.Orders?.Any(e => e.OrderId == id)).GetValueOrDefault();
-        }
     }
 }

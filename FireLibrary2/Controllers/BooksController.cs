@@ -5,13 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using FireLibrary2.Data;
+using FireLibrary2.DTOs;
 using FireLibrary2.Models;
-using Microsoft.AspNetCore.Cors;
 
 namespace FireLibrary2.Controllers
 {
-    [EnableCors("_myAllowSpecificOrigins")]
     [Route("api/[controller]")]
     [ApiController]
     public class BooksController : ControllerBase
@@ -25,111 +23,118 @@ namespace FireLibrary2.Controllers
 
         // GET: api/Books
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Book>>> GetBooks()
+        public async Task<ActionResult<List<BookDTO>>> GetBooks()
         {
-          if (_context.Books == null)
-          {
-              return NotFound();
-          }
-            return await _context.Books.ToListAsync();
-        }
-
-        // GET: api/Books/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Book>> GetBook(string id)
-        {
-          if (_context.Books == null)
-          {
-              return NotFound();
-          }
-            var book = await _context.Books.FindAsync(id);
-
-            if (book == null)
+            if (_context.Books == null)
             {
                 return NotFound();
             }
 
-            return book;
+            List<Book> books = await _context.Books.ToListAsync();
+            List<BookDTO> result = new();
+
+            result = BookDTO.CreateBookDTOs(books);
+
+            if (books == null)
+            {
+                return NotFound();
+            }
+
+            return result;
         }
 
-        // PUT: api/Books/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutBook(string id, Book book)
-        {
-            if (id != book.Isbn)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(book).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!BookExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Books
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Book>> PostBook(Book book)
-        {
-          if (_context.Books == null)
-          {
-              return Problem("Entity set 'DataContext.Books'  is null.");
-          }
-            _context.Books.Add(book);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (BookExists(book.Isbn))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return CreatedAtAction("GetBook", new { id = book.Isbn }, book);
-        }
-
-        // DELETE: api/Books/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteBook(string id)
+        // GET: api/Books/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<BookDTO>> GetBook(string id)
         {
             if (_context.Books == null)
             {
                 return NotFound();
             }
             var book = await _context.Books.FindAsync(id);
+            BookDTO result = new();
+
+            result = BookDTO.CreateBookDTO(book);
+
             if (book == null)
             {
                 return NotFound();
             }
 
-            _context.Books.Remove(book);
-            await _context.SaveChangesAsync();
+            return result;
+        }
 
-            return NoContent();
+        [HttpGet("search/genre")]
+        public async Task<ActionResult<List<BookDTO>>> SearchBooksGenre([FromQuery] string filter)
+        {
+            if (_context.Books == null)
+            {
+                return NotFound();
+            }
+
+
+            List<BookDTO> result = new List<BookDTO>();
+            List<Book> books = new List<Book>();
+
+            books = await _context.Books.Where(b => b.Genre.ToLower() == filter).ToListAsync();
+
+            result = BookDTO.CreateBookDTOs(books);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return result;
+        }
+
+        [HttpGet("search/author")]
+        public async Task<ActionResult<List<BookDTO>>> SearchBooksAuthor([FromQuery] string filter)
+        {
+            if (_context.Books == null)
+            {
+                return NotFound();
+            }
+
+
+            List<BookDTO> result = new List<BookDTO>();
+            List<Book> books = new List<Book>();
+
+            books = await _context.Books.Where(b => b.AuthorName.ToLower() == filter).ToListAsync();
+
+            result = BookDTO.CreateBookDTOs(books);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return result;
+        }
+
+        [HttpGet("search/title")]
+        public async Task<ActionResult<List<BookDTO>>> SearchBooks([FromQuery] string filter)
+        {
+            if (_context.Books == null)
+            {
+                return NotFound();
+            }
+
+            filter.ToLower();
+
+            List<BookDTO> result = new List<BookDTO>();
+            List<Book> books = new List<Book>();
+
+            books = await _context.Books.Where(b => b.Title.ToLower() == filter).ToListAsync();
+
+            result = BookDTO.CreateBookDTOs(books);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return result;
         }
 
         private bool BookExists(string id)
