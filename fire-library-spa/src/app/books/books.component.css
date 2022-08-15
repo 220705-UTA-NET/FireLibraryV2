@@ -1,0 +1,12 @@
+.books{
+    width: 100%;
+}
+.books img{
+    width: 200px;
+    height: 200px;
+    float: left;
+    padding-right: 50px;
+}
+.books data{
+    float: right;
+}
