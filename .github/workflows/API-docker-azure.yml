@@ -37,9 +37,6 @@ jobs:
         with:
           context: ./FireLibrary2/
           file: ./FireLibrary2/Dockerfile
-          builder: ${{ steps.buildx.outputs.name }}
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/firelibrary2:latest
-          cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/firelibrary2:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/firelibrary2:buildcache,mode=max
           
