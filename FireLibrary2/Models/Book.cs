@@ -17,13 +17,15 @@ namespace FireLibrary2.Models
         [Required]
         public string? AuthorName { get; set; }
         [Required]
-        public string? Synopsys { get; set; }
+        public string? Synopsis { get; set; }
         [Required]
         public string? Excerpt { get; set; }
         [Required]
         public int TotalCopies { get; set; } = 5;
         [Required]
         public int AvalableCopies { get; set; } = 5;
+        [Required]
+        public string Genre { get; set; }
 
         public List<Order> Orders { get; set; }
 
