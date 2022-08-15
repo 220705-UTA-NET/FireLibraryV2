@@ -11,7 +11,7 @@
 #FROM node:latest as build 
 
 WORKDIR /app
-COPY ./fire-library-spa ./
+COPY . .
 RUN npm install
 RUN npm run build --prod
 
