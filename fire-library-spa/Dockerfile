@@ -8,7 +8,7 @@
 #FROM nginx:alpine
 #COPY --from=node /app/dist/fire-library-spa /usr/share/nginx/html
 
-#FROM node:latest as build 
+FROM node:latest as build 
 
 WORKDIR /app
 COPY . .
