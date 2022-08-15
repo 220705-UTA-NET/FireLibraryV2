@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using FireLibrary2.Data;
+using FireLibrary2.DTOs;
 using FireLibrary2.Models;
 using Microsoft.AspNetCore.Cors;
 
@@ -16,125 +16,135 @@ namespace FireLibrary2.Controllers
     [ApiController]
     public class BooksController : ControllerBase
     {
-        private readonly DataContext _context;
+        public readonly IRepository _repo;
+        private readonly ILogger<BooksController> _logger;
 
-        public BooksController(DataContext context)
+        public BooksController(IRepository repo, ILogger<BooksController> logger)
         {
-            _context = context;
+            _repo = repo;
+            _logger = logger;
         }
 
         // GET: api/Books
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Book>>> GetBooks()
+        public async Task<ActionResult<List<BookDTO>>> GetBooks()
         {
-          if (_context.Books == null)
-          {
-              return NotFound();
-          }
-            return await _context.Books.ToListAsync();
-        }
 
-        // GET: api/Books/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Book>> GetBook(string id)
-        {
-          if (_context.Books == null)
-          {
-              return NotFound();
-          }
-            var book = await _context.Books.FindAsync(id);
-
-            if (book == null)
-            {
-                return NotFound();
-            }
-
-            return book;
-        }
-
-        // PUT: api/Books/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutBook(string id, Book book)
-        {
-            if (id != book.Isbn)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(book).State = EntityState.Modified;
+            List<BookDTO> result = new();
 
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!BookExists(id))
+                result = await _repo.GetAllBooksAsync();
+
+                if (result == null)
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                return StatusCode(500);
             }
 
-            return NoContent();
+
+            return result;
         }
 
-        // POST: api/Books
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Book>> PostBook(Book book)
+        // GET: api/Books/5
+        [HttpGet("search/isbn")]
+        public async Task<ActionResult<BookDTO>> GetBook(string isbn)
         {
-          if (_context.Books == null)
-          {
-              return Problem("Entity set 'DataContext.Books'  is null.");
-          }
-            _context.Books.Add(book);
+            BookDTO result = new();
+
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (BookExists(book.Isbn))
+                result = await _repo.GetBookAsync(isbn);
+
+                if (result == null)
                 {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
+                    return NotFound();
                 }
             }
-
-            return CreatedAtAction("GetBook", new { id = book.Isbn }, book);
-        }
-
-        // DELETE: api/Books/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteBook(string id)
-        {
-            if (_context.Books == null)
+            catch (Exception e)
             {
-                return NotFound();
-            }
-            var book = await _context.Books.FindAsync(id);
-            if (book == null)
-            {
-                return NotFound();
+                _logger.LogError(e, e.Message);
+                return StatusCode(500);
             }
 
-            _context.Books.Remove(book);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            return result;
         }
 
-        private bool BookExists(string id)
+        [HttpGet("search/genre")]
+        public async Task<ActionResult<List<BookDTO>>> SearchBooksGenre(string genre)
         {
-            return (_context.Books?.Any(e => e.Isbn == id)).GetValueOrDefault();
+            List<BookDTO> result = new();
+
+            try
+            {
+                result = await _repo.SearchBooksGenreAsync(genre.ToLower());
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                return StatusCode(500);
+            }
+
+
+            return result;
         }
+
+        [HttpGet("search/author")]
+        public async Task<ActionResult<List<BookDTO>>> SearchBooksAuthor(string author)
+        {
+            List<BookDTO> result = new List<BookDTO>();
+
+            try
+            {
+                result = await _repo.SearchBooksGenreAsync(author.ToLower());
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                return StatusCode(500);
+            }
+
+            return result;
+        }
+
+        [HttpGet("search/title")]
+        public async Task<ActionResult<List<BookDTO>>> SearchBooksTitle(string title)
+        {
+            List<BookDTO> result = new List<BookDTO>();
+
+            try
+            {
+                result = await _repo.SearchBooksGenreAsync(title.ToLower());
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                return StatusCode(500);
+            }
+
+            return result;
+        }
+
+
     }
 }

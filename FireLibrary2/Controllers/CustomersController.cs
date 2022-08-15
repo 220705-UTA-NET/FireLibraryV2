@@ -2,125 +2,123 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FireLibrary2.DTOs;
+using FireLibrary2.Models;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using FireLibrary2.Data;
-using FireLibrary2.Models;
-using Microsoft.AspNetCore.Cors;
+
 
 namespace FireLibrary2.Controllers
 {
     [EnableCors("_myAllowSpecificOrigins")]
-    [Route("api/[controller]")]
+    [Route("api/Customer")]
     [ApiController]
     public class CustomersController : ControllerBase
     {
-        private readonly DataContext _context;
+        public readonly IRepository _repo;
+        private readonly ILogger<CustomersController> _logger;
 
-        public CustomersController(DataContext context)
+        public CustomersController(IRepository repo, ILogger<CustomersController> logger)
         {
-            _context = context;
+            _repo = repo;
+            _logger = logger;
         }
 
         // GET: api/Customers
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
+        public async Task<ActionResult<IEnumerable<CustomerDTO>>> GetCustomers()
         {
-          if (_context.Customers == null)
-          {
-              return NotFound();
-          }
-            return await _context.Customers.ToListAsync();
+            List<CustomerDTO> result = new();
+
+            try
+            {
+                result = await _repo.GetAllCustomersAsync();
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                return StatusCode(500);
+            }
+
+
+            return result;
         }
 
         // GET: api/Customers/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Customer>> GetCustomer(int id)
+        public async Task<ActionResult<CustomerDTO>> GetCustomer(int id)
         {
-          if (_context.Customers == null)
-          {
-              return NotFound();
-          }
-            var customer = await _context.Customers.FindAsync(id);
+            CustomerDTO result = new();
 
-            if (customer == null)
+            try
             {
-                return NotFound();
+                result = await _repo.GetCustomerByIdAsync(id);
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                return StatusCode(500);
             }
 
-            return customer;
+            return Ok(result);
+        }
+
+        //Get all orders for customer
+        [HttpGet("Orders")]
+        public async Task<ActionResult<IEnumerable<OrderDTO>>> GetCustomerOrders(int customerId)
+        {
+            List<OrderDTO> result = new();
+
+            try
+            {
+                result = await _repo.GetCustomerOrdersASync(customerId);
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                return StatusCode(500);
+            }
+
+            return Ok(result);
         }
 
         // PUT: api/Customers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutCustomer(int id, Customer customer)
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> UpdateCustomer(CustomerDTO request)
         {
-            if (id != customer.CustomerId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(customer).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _repo.UpdateCustomer(request);
+
+
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception e)
             {
-                if (!CustomerExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                _logger.LogError(e, e.Message);
+                return StatusCode(500);
             }
 
-            return NoContent();
+            return Ok();
         }
 
-        // POST: api/Customers
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Customer>> PostCustomer(Customer customer)
-        {
-          if (_context.Customers == null)
-          {
-              return Problem("Entity set 'DataContext.Customers'  is null.");
-          }
-            _context.Customers.Add(customer);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetCustomer", new { id = customer.CustomerId }, customer);
-        }
-
-        // DELETE: api/Customers/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCustomer(int id)
-        {
-            if (_context.Customers == null)
-            {
-                return NotFound();
-            }
-            var customer = await _context.Customers.FindAsync(id);
-            if (customer == null)
-            {
-                return NotFound();
-            }
-
-            _context.Customers.Remove(customer);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool CustomerExists(int id)
-        {
-            return (_context.Customers?.Any(e => e.CustomerId == id)).GetValueOrDefault();
-        }
     }
 }
+

@@ -16,7 +16,7 @@ namespace FireLibrary2.Models
         [Required]
         public int BookCount { get; set; } = 0;
 
-        public List<Order>? Orders { get; set; } 
+        public List<Order> Orders { get; set; } 
 
     }
 }

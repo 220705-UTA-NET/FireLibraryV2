@@ -14,7 +14,8 @@ namespace FireLibrary2.Models
         [Required]
         public DateTime DateDue { get; set; }
 
-        public List<Book>? Books { get; set; }
+        //Navigation Property
+        public List<Book> Books { get; set; }
 
     }
 }
