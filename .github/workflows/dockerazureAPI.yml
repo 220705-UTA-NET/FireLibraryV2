@@ -32,7 +32,7 @@ jobs:
           context: .
           push: true
           tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_98e534c1fb1e405f9a7e9034c6a36920 }}/jdelacruz087/firelibrary:${{ github.sha }}
-          file: ./Dockerfile
+          file: ./FireLibrary2/Dockerfile
 
   deploy:
       runs-on: ubuntu-latest
