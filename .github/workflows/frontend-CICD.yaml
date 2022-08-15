@@ -1,4 +1,4 @@
-name: angular-built
+name: angular-dockerhub
 on:
   push:
     branches:
