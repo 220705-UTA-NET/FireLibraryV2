@@ -1,22 +1,23 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+# syntax=docker/dockerfile:1
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
 WORKDIR /app
-EXPOSE 80
-EXPOSE 443
-
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-WORKDIR /src
-COPY ["FireLibrary2/FireLibrary2.csproj", "FireLibrary2/"]
-RUN dotnet restore "FireLibrary2/FireLibrary2.csproj"
-COPY . .
-WORKDIR "/src/FireLibrary2"
-RUN dotnet build "FireLibrary2.csproj" -c Release -o /app/build
-
-FROM build AS publish
-RUN dotnet publish "FireLibrary2.csproj" -c Release -o /app/publish
-
-FROM base AS final
+    
+# Copy csproj and restore as distinct layers
+COPY ./FireLibrary2/*.csproj ./FireLibrary2/
+# COPY ./Project3.sln ./
+RUN dotnet restore ./FireLibrary2/
+    
+# Copy everything else and build
+COPY ./ ./
+RUN dotnet publish -c Release -o out
+    
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "FireLibrary2.dll"]
+COPY --from=build-env /app/out .
+
+EXPOSE 7208
+
+# ENTRYPOINT ["dotnet", "Project3.dll"]
+CMD dotnet FireLibrary2.dll --urls=http://0.0.0.0:7208
