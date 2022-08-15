@@ -28,9 +28,9 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-        cache-dependency-path: ./client/package-lock.json
-    - run: npm --prefix ./client/ ci
-    - run: npm --prefix ./client/ run build --if-present
+        cache-dependency-path: ./fire-library-spa/package-lock.json
+    - run: npm --prefix ./fire-library-spa/ ci
+    - run: npm --prefix ./fire-library-spa/ run build --if-present
     # - run: npm --prefix ./client/ test
   
   docker:
