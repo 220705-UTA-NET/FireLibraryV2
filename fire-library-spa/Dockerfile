@@ -1,3 +1,4 @@
+
 FROM node:latest as build 
 
 WORKDIR /app
@@ -11,3 +12,4 @@ COPY --from=build /app/dist/* /usr/share/nginx/html
 
 EXPOSE 443 
 EXPOSE 80
+
