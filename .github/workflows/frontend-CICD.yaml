@@ -56,4 +56,4 @@ jobs:
             context: ./fire-library-spa/
             file: ./fire-library-spa/Dockerfile
             push: true
-            tags: ${{ secrets.DOCKERHUB_USERNAME }}/fire-library-spa:latest
+            tags: ${{ secrets.DOCKERHUB_USERNAME }}/firelibraryspa:latest
