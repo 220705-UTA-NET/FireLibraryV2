@@ -4,7 +4,7 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
 WORKDIR /app
     
 # Copy csproj and restore as distinct layers
-COPY ./FireLibrary2/*.csproj ./FireLibrary2/
+COPY ./*.csproj ./FireLibrary2/
 # COPY ./Project3.sln ./
 RUN dotnet restore ./FireLibrary2/
     
