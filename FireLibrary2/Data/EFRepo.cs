@@ -257,14 +257,17 @@ namespace FireLibrary2.Data
 
             foreach (var i in order.Books)
             {
-                //Adds an available copy to the book object in the DB
-                i.AvalableCopies += 1;
-                //Removes a book from the customer's BookCount 
-                customer.BookCount -= 1;
-                //Stages changes to the DB, updating the returned book in the DB to reflect the additional copy available
-                _context.Books.Update(i);
+                //Gets the actual book from the db
+                Book tmpBook = await _context.Books.FindAsync(i.Isbn);
 
-                booksToRemove.Add(i);
+                //Adds available copy to tmpBook
+                tmpBook.AvalableCopies += 1;
+
+                //Adds the book to the list of books to remove
+                booksToRemove.Add(tmpBook);
+
+                //Remove book from bookcount.
+                customer.BookCount -= 1;
             }
 
             //Removing books to remove from the order book list
