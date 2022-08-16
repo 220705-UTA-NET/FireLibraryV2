@@ -8,7 +8,7 @@ import { Observable } from "rxjs";
 })
 export class MyBooksService {
   constructor(private http:HttpClient){}
-  getAllOrders(url:string): Observable<Order[]>{
+  getBooksFromOrder(url:string): Observable<Order[]>{
     return this.http.get<Order[]>(url);
 }
   
