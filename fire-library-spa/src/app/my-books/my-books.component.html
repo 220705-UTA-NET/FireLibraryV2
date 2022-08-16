@@ -1,0 +1,12 @@
+<div>
+    <div *ngFor="let item of myOrders" class="books" style="margin-bottom: 50px;">
+        
+        <ul>
+        <li>orderId: {{item.orderId}}</li>
+        <li>dateLent: {{item.dateLent}}</li>
+        <li>dateDue: {{item.dateDue}}</li>
+        <li>bookCount: {{item.books.length}}</li>
+        </ul>
+        <!-- TODO extract {{item.books}} into a bookList, then use <div *ngFor="let book of bookList" class="books" style="margin-bottom: 50px;">-->
+    </div>
+</div> 
