@@ -2,7 +2,7 @@
 {
     public class ReturnDTO
     {
-        public int orderId;
-        public string isbn;
+        public int orderId {get; set;}
+        public string isbn {get; set;}
     }
 }

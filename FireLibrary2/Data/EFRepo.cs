@@ -293,7 +293,7 @@ namespace FireLibrary2.Data
             Order order = await _context.Orders.FindAsync(bookToReturn.orderId);
             Customer customer = await _context.Customers.FindAsync(order.CustomerId);
 
-            order.Books.Remove(book);
+            order.Books.RemoveAll(b => b.Isbn == bookToReturn.isbn);
             customer.BookCount -= 1;
 
             _context.Orders.Update(order);
