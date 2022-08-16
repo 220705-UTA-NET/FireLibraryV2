@@ -4,34 +4,38 @@ global using Microsoft.EntityFrameworkCore;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 
-// Add services to the container.
-string connectionString = builder.Configuration.GetConnectionString("connectionString");
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(name: MyAllowSpecificOrigins,
-                            policy =>
-                            {
-                                policy.WithOrigins("*");
-                            });
-});
+builder.Services.AddCors();
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy(name: MyAllowSpecificOrigins,
+//                            policy =>
+//                            {
+//                                policy.WithOrigins("*");
+//                                policy.AllowAnyHeader();
+//                                policy.AllowAnyMethod();                        
+//                            });
+//});
 
 
 builder.Services.AddControllers();
+
+builder.Services.AddScoped<IRepository, EFRepo>();
+
 builder.Services.AddDbContext<DataContext>(options =>
 {
-    options.UseSqlServer(connectionString);
-    
+    options.UseSqlServer(builder.Configuration.GetConnectionString("connectionString"));
 });
+
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -47,7 +51,13 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = string.Empty;
 });
 
-app.UseCors(MyAllowSpecificOrigins);
+app.UseCors(builder =>
+{
+    builder.AllowAnyHeader();
+    builder.AllowAnyMethod();
+    builder.AllowAnyOrigin();
+}
+);
 
 app.UseHttpsRedirection();
 

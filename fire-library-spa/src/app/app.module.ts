@@ -10,6 +10,7 @@ import { TemplateComponent } from './template/template.component';
 import { AuthService } from './auth/auth.service';
 import { LoginComponent } from './auth/login/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MyBooksComponent } from './my-books/my-books.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     TopComponent,
     BooksComponent,
     TemplateComponent,
-    LoginComponent
+    LoginComponent,
+    MyBooksComponent
   ],
   imports: [
     BrowserModule,

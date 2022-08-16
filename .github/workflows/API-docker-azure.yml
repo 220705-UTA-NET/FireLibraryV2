@@ -1,0 +1,55 @@
+name: Web API to DockerHub to Azure
+
+on:
+  push:
+    branches:
+        - 'main'
+        - 'dev'
+    paths:
+        - './FireLibrary2/'
+  pull_request:
+    branches: 
+        - 'main'
+        - 'dev'
+  workflow_dispatch:
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 6.0.x
+    - name: Restore dependencies
+      run: dotnet restore ./FireLibrary2/
+    - name: dotnetBuild
+      run: dotnet build ./FireLibrary2/ --no-restore
+    # - name: Test
+      # run: dotnet test --no-build --verbosity normal
+
+  docker:
+      needs: build
+      runs-on: ubuntu-latest
+      steps:
+        -
+          name: Checkout 
+          uses: actions/checkout@v2
+        -
+          name: Login to Docker Hub
+          uses: docker/login-action@v1
+          with:
+            username: ${{ secrets.DOCKER_USERNAME }}
+            password: ${{ secrets.DOCKERHUB_TOKEN }}
+        -
+          name: Set up Docker Buildx
+          uses: docker/setup-buildx-action@v1
+        -
+          name: Build and push
+          uses: docker/build-push-action@v2
+          with:
+            context: ./FireLibrary2/
+            file: ./FireLibrary2/Dockerfile
+            push: true
+            tags: ${{ secrets.DOCKER_USERNAME }}/firelibrary2:latest

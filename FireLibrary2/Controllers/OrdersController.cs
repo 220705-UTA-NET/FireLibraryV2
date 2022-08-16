@@ -5,122 +5,120 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using FireLibrary2.Data;
 using FireLibrary2.Models;
+using FireLibrary2.DTOs;
 using Microsoft.AspNetCore.Cors;
 
 namespace FireLibrary2.Controllers
 {
-    [EnableCors("_myAllowSpecificOrigins")]
-    [Route("api/[controller]")]
+    [EnableCors]
+    [Route("api/Orders")]
     [ApiController]
-    public class OrdersController : ControllerBase
+    public class OrderController : ControllerBase
     {
-        private readonly DataContext _context;
+        public readonly IRepository _repo;
+        private readonly ILogger<OrderController> _logger;
 
-        public OrdersController(DataContext context)
+        public OrderController(IRepository repo, ILogger<OrderController> logger)
         {
-            _context = context;
+            _repo = repo;
+            _logger = logger;
         }
 
-        // GET: api/Orders
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
+
+
+        [HttpPost] //takes an order DTO, creates an order.
+        public async Task<ActionResult> PostOrder(OrderDTO request)
         {
-          if (_context.Orders == null)
-          {
-              return NotFound();
-          }
-            return await _context.Orders.ToListAsync();
-        }
-
-        // GET: api/Orders/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Order>> GetOrder(int id)
-        {
-          if (_context.Orders == null)
-          {
-              return NotFound();
-          }
-            var order = await _context.Orders.FindAsync(id);
-
-            if (order == null)
-            {
-                return NotFound();
-            }
-
-            return order;
-        }
-
-        // PUT: api/Orders/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrder(int id, Order order)
-        {
-            if (id != order.OrderId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(order).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!OrderExists(id))
+                string result = await _repo.PostOrderAsync(request);
+
+                if (result == null)
                 {
-                    return NotFound();
+                    return Problem();
                 }
                 else
                 {
-                    throw;
+                    switch (result)
+                    {
+                        case "toomany":
+                            return BadRequest("Too many books on this order!");
+                        case "duplicate":
+                            return BadRequest("Please remove duplicate books!");
+                        case "availability":
+                            return BadRequest("One or more books is not available!");
+                        case "success":
+                            return Ok("Order placed!");
+                    }
                 }
             }
-
-            return NoContent();
-        }
-
-        // POST: api/Orders
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Order>> PostOrder(Order order)
-        {
-          if (_context.Orders == null)
-          {
-              return Problem("Entity set 'DataContext.Orders'  is null.");
-          }
-            _context.Orders.Add(order);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetOrder", new { id = order.OrderId }, order);
-        }
-
-        // DELETE: api/Orders/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOrder(int id)
-        {
-            if (_context.Orders == null)
+            catch (Exception e)
             {
-                return NotFound();
-            }
-            var order = await _context.Orders.FindAsync(id);
-            if (order == null)
-            {
-                return NotFound();
+                _logger.LogError(e, e.Message);
+                return StatusCode(500);
             }
 
-            _context.Orders.Remove(order);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            return Ok();
         }
 
-        private bool OrderExists(int id)
+        [HttpGet] //gets a specific order
+        public async Task<ActionResult<OrderDTO>> GetOrder(int id)
         {
-            return (_context.Orders?.Any(e => e.OrderId == id)).GetValueOrDefault();
+            OrderDTO result = new();
+
+            try
+            {
+                result = await _repo.GetOrderAsync(id);
+
+                if (result == null)
+                {
+                    return BadRequest("Order not found!");
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                return StatusCode(500);
+            }
+
+            return Ok(result);
+
         }
+
+        [HttpPost("return/{id}")]
+        public async Task<ActionResult> ReturnBooks(OrderDTO request)
+        {
+            try
+            {
+                await _repo.ReturnBooksAsync(request);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+            }
+
+            //Returns 200OK along with returned book count. 
+            return Ok($"You have returned {request.Books.Count()} books!");
+        }
+
+        [HttpPost("returnbook")]
+        public async Task<ActionResult> ReturnOneBook(ReturnDTO bookToReturn)
+        {
+            try
+            {
+                await _repo.ReturnOneBookAsync(bookToReturn);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+            }
+
+            //Returns 200OK along with returned book count. 
+            return Ok("Book returned!");
+        }
+
     }
+
 }
