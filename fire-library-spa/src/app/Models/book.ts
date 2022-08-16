@@ -1,3 +1,4 @@
+//model for binding book that will be set when we get a reponse from api
 export class Book{
     isbn: string;
     title: string;

@@ -1,9 +1,10 @@
 <div>
+    <!--the ngfor is a way to make a for loop in the html file-->
     <div *ngFor="let item of books" class="books" style="margin-bottom: 50px;">
         
         <img src="https://covers.openlibrary.org/b/isbn/{{item.isbn}}-M.jpg" />
         <ul>
-        <li>isbn: {{item.isbn}}</li>
+        <li>isbn: {{item.isbn}}</li><!--string interpolation-->
         <li>Title: {{item.title}}</li>
         <li>Publisher: {{item.publisher}}</li>
         <li>Language: {{item.language}}</li>
