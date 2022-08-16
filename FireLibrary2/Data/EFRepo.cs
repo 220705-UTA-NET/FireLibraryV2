@@ -287,6 +287,29 @@ namespace FireLibrary2.Data
             }
         }
 
+        public async Task ReturnOneBookAsync(ReturnDTO bookToReturn)
+        {
+            Book book = await _context.Books.FindAsync(bookToReturn.isbn);
+            Order order = await _context.Orders.FindAsync(bookToReturn.orderId);
+            Customer customer = await _context.Customers.FindAsync(order.CustomerId);
+
+            order.Books.Remove(book);
+            customer.BookCount -= 1;
+
+            _context.Orders.Update(order);
+            _context.Customers.Update(customer);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException e)
+            {
+                _logger.LogError(e, e.Message);
+            }
+
+        }
+
     }
 }
 
