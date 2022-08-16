@@ -15,7 +15,7 @@ export class MyBooksComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.myBooksService.getAllBooks(this.url).subscribe((Res) => {
+    this.myBooksService.getAllOrders(this.url).subscribe((Res) => {
       this.myOrders = Res;
     });
   }

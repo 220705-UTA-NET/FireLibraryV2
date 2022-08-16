@@ -1,5 +1,6 @@
 <div>
     <div *ngFor="let item of myOrders" class="books" style="margin-bottom: 50px;">
+        <!-- We can put anything here like {{item.dateLent}} -->
         <ul class="books" *ngFor="let book of item.books">
             <img src="https://covers.openlibrary.org/b/isbn/{{book.isbn}}-M.jpg" />
             <li>isbn: {{book.isbn}}</li>
