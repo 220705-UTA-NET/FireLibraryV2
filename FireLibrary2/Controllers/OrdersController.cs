@@ -103,6 +103,22 @@ namespace FireLibrary2.Controllers
             return Ok($"You have returned {request.Books.Count()} books!");
         }
 
+        [HttpPost("returnbook")]
+        public async Task<ActionResult> ReturnOneBook(ReturnDTO bookToReturn)
+        {
+            try
+            {
+                await _repo.ReturnOneBookAsync(bookToReturn);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+            }
+
+            //Returns 200OK along with returned book count. 
+            return Ok("Book returned!");
+        }
+
     }
 
 }

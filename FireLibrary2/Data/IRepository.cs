@@ -21,6 +21,7 @@ namespace FireLibrary2.Data
         Task<string> PostOrderAsync(OrderDTO request);
         Task<OrderDTO> GetOrderAsync(int id);
         Task ReturnBooksAsync(OrderDTO request);
+        Task ReturnOneBookAsync(ReturnDTO request);
 
 
     }
