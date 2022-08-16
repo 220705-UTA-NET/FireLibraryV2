@@ -1,12 +1,17 @@
 <div>
     <div *ngFor="let item of myOrders" class="books" style="margin-bottom: 50px;">
-        
-        <ul>
-        <li>orderId: {{item.orderId}}</li>
-        <li>dateLent: {{item.dateLent}}</li>
-        <li>dateDue: {{item.dateDue}}</li>
-        <li>bookCount: {{item.books.length}}</li>
+        <ul class="books" *ngFor="let book of item.books">
+            <img src="https://covers.openlibrary.org/b/isbn/{{book.isbn}}-M.jpg" />
+            <li>isbn: {{book.isbn}}</li>
+            <li>Title: {{book.title}}</li>
+            <li>Publisher: {{book.publisher}}</li>
+            <li>Language: {{book.language}}</li>
+            <li>Pages: {{book.pages}}</li>
+            <li>AuthorName: {{book.authorName}}</li>
+            <li>Synopsys: {{book.synopsys}}</li>
+            <li>Excerpt: {{book.excerpt}}</li>
+            <li>TotalCopies: {{book.totalCopies}}</li>
+            <li>AvalableCopies: {{book.avalableCopies}}</li>
         </ul>
-        <!-- TODO extract {{item.books}} into a bookList, then use <div *ngFor="let book of bookList" class="books" style="margin-bottom: 50px;">-->
     </div>
 </div> 
