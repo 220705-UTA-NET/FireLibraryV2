@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Cors;
 
 namespace FireLibrary2.Controllers
 {
-    [EnableCors("_myAllowSpecificOrigins")]
+    [EnableCors]
     [Route("api/Orders")]
     [ApiController]
     public class OrderController : ControllerBase

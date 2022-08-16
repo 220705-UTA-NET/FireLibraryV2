@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FireLibrary2.Controllers
 {
-    [EnableCors("_myAllowSpecificOrigins")]
+    [EnableCors]
     [Route("api/Customer")]
     [ApiController]
     public class CustomersController : ControllerBase
