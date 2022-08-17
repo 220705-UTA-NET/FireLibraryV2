@@ -3,6 +3,8 @@ import { Book } from '../Models/book';
 import { BooksService } from '../services/books.service';
 import { AuthService } from '../auth/auth.service';
 import { Subscription } from 'rxjs';
+import { CartService } from '../services/cart.service';
+
 @Component({
   selector: 'app-books',
   templateUrl: './books.component.html',
@@ -15,7 +17,7 @@ export class BooksComponent implements OnInit, OnDestroy {
   public loggedIn = false;
   private authListener: Subscription|null = null; 
 
-  constructor(private mybooksService:BooksService, private auth:AuthService) { 
+  constructor(private mybooksService:BooksService, private auth:AuthService, private cart:CartService) { 
     this.authListener = this.auth.getAuthStatusListener().subscribe(value=>{
       this.loggedIn = value;
     })
@@ -29,5 +31,12 @@ export class BooksComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.authListener?.unsubscribe();
   }
-
+  addBook(book:Book){
+    
+    var index = this.cart.getBooksInCart().findIndex(a => a.isbn == book.isbn);
+    if(index < 0){//only add if book does not exists | basically look for book and get the index | findIndex returns -1 when not found
+      this.cart.addToCart(book);
+      console.log(this.cart.getBooksInCart());
+    }
+  }
 }
