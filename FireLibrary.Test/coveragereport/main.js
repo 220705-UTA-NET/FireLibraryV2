@@ -221,15 +221,17 @@ var assemblies = [
   {
     "name": "FireLibrary2",
     "classes": [
-      { "name": "FireLibrary2.Controllers.BooksController", "rp": "FireLibrary2_BooksController.html", "cl": 16, "ucl": 60, "cal": 76, "tl": 150, "ct": "LineCoverage", "cbm": "-", "cb": 2, "tb": 10, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [] },
+      { "name": "FireLibrary2.Controllers.BooksController", "rp": "FireLibrary2_BooksController.html", "cl": 46, "ucl": 30, "cal": 76, "tl": 150, "ct": "LineCoverage", "cbm": "-", "cb": 8, "tb": 10, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [] },
       { "name": "FireLibrary2.Controllers.CustomersController", "rp": "FireLibrary2_CustomersController.html", "cl": 17, "ucl": 42, "cal": 59, "tl": 125, "ct": "LineCoverage", "cbm": "-", "cb": 2, "tb": 6, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [] },
-      { "name": "FireLibrary2.Controllers.OrderController", "rp": "FireLibrary2_OrderController.html", "cl": 15, "ucl": 34, "cal": 49, "tl": 108, "ct": "LineCoverage", "cbm": "-", "cb": 2, "tb": 12, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [] },
-      { "name": "FireLibrary2.Controllers.UsersController", "rp": "FireLibrary2_UsersController.html", "cl": 0, "ucl": 89, "cal": 89, "tl": 182, "ct": "LineCoverage", "cbm": "-", "cb": 0, "tb": 20, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [] },
+      { "name": "FireLibrary2.Controllers.OrderController", "rp": "FireLibrary2_OrderController.html", "cl": 15, "ucl": 44, "cal": 59, "tl": 124, "ct": "LineCoverage", "cbm": "-", "cb": 2, "tb": 12, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [] },
+      { "name": "FireLibrary2.Controllers.UsersController", "rp": "FireLibrary2_UsersController.html", "cl": 0, "ucl": 92, "cal": 92, "tl": 187, "ct": "LineCoverage", "cbm": "-", "cb": 0, "tb": 20, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [] },
       { "name": "FireLibrary2.Data.DataContext", "rp": "FireLibrary2_DataContext.html", "cl": 0, "ucl": 8, "cal": 8, "tl": 22, "ct": "LineCoverage", "cbm": "-", "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [] },
-      { "name": "FireLibrary2.Data.EFRepo", "rp": "FireLibrary2_EFRepo.html", "cl": 0, "ucl": 153, "cal": 153, "tl": 292, "ct": "LineCoverage", "cbm": "-", "cb": 0, "tb": 18, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [] },
+      { "name": "FireLibrary2.Data.EFRepo", "rp": "FireLibrary2_EFRepo.html", "cl": 0, "ucl": 169, "cal": 169, "tl": 315, "ct": "LineCoverage", "cbm": "-", "cb": 0, "tb": 18, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [] },
       { "name": "FireLibrary2.DTOs.BookDTO", "rp": "FireLibrary2_BookDTO.html", "cl": 11, "ucl": 55, "cal": 66, "tl": 102, "ct": "LineCoverage", "cbm": "-", "cb": 0, "tb": 4, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [] },
       { "name": "FireLibrary2.DTOs.CustomerDTO", "rp": "FireLibrary2_CustomerDTO.html", "cl": 5, "ucl": 9, "cal": 14, "tl": 27, "ct": "LineCoverage", "cbm": "-", "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [] },
+      { "name": "FireLibrary2.DTOs.LoginDTO", "rp": "FireLibrary2_LoginDTO.html", "cl": 0, "ucl": 3, "cal": 3, "tl": 10, "ct": "LineCoverage", "cbm": "-", "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [] },
       { "name": "FireLibrary2.DTOs.OrderDTO", "rp": "FireLibrary2_OrderDTO.html", "cl": 5, "ucl": 0, "cal": 5, "tl": 13, "ct": "LineCoverage", "cbm": "-", "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [] },
+      { "name": "FireLibrary2.DTOs.ReturnDTO", "rp": "FireLibrary2_ReturnDTO.html", "cl": 0, "ucl": 2, "cal": 2, "tl": 8, "ct": "LineCoverage", "cbm": "-", "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [] },
       { "name": "FireLibrary2.DTOs.UserDTO", "rp": "FireLibrary2_UserDTO.html", "cl": 0, "ucl": 2, "cal": 2, "tl": 9, "ct": "LineCoverage", "cbm": "-", "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [] },
       { "name": "FireLibrary2.Migrations.createinitial", "rp": "FireLibrary2_createinitial.html", "cl": 0, "ucl": 278, "cal": 278, "tl": 333, "ct": "LineCoverage", "cbm": "-", "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [] },
       { "name": "FireLibrary2.Migrations.DataContextModelSnapshot", "rp": "FireLibrary2_DataContextModelSnapshot.html", "cl": 0, "ucl": 164, "cal": 164, "tl": 193, "ct": "LineCoverage", "cbm": "-", "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [] },
@@ -237,7 +239,7 @@ var assemblies = [
       { "name": "FireLibrary2.Models.Customer", "rp": "FireLibrary2_Customer.html", "cl": 0, "ucl": 6, "cal": 6, "tl": 22, "ct": "LineCoverage", "cbm": "-", "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [] },
       { "name": "FireLibrary2.Models.Order", "rp": "FireLibrary2_Order.html", "cl": 0, "ucl": 5, "cal": 5, "tl": 21, "ct": "LineCoverage", "cbm": "-", "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [] },
       { "name": "FireLibrary2.Models.User", "rp": "FireLibrary2_User.html", "cl": 0, "ucl": 4, "cal": 4, "tl": 14, "ct": "LineCoverage", "cbm": "-", "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [] },
-      { "name": "Program", "rp": "FireLibrary2_Program.html", "cl": 0, "ucl": 35, "cal": 35, "tl": 60, "ct": "LineCoverage", "cbm": "-", "cb": 0, "tb": 2, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [] },
+      { "name": "Program", "rp": "FireLibrary2_Program.html", "cl": 0, "ucl": 34, "cal": 34, "tl": 68, "ct": "LineCoverage", "cbm": "-", "cb": 0, "tb": 2, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [] },
     ]},
 ];
 
