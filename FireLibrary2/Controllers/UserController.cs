@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Cors;
 
 namespace FireLibrary2.Controllers
 {
-    [EnableCors("_myAllowSpecificOrigins")]
+    [EnableCors]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -101,8 +101,10 @@ namespace FireLibrary2.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<string>> Login(UserDTO request)
+        public async Task<ActionResult<LoginDTO>> Login(UserDTO request)
         {
+            LoginDTO result = new();
+
             if (_context.Users == null)
             {
                 return Problem("Entity set 'DataContext.Users' is null.");
@@ -120,10 +122,13 @@ namespace FireLibrary2.Controllers
                 return Unauthorized("Wrong password!");
             }
 
-            string token = CreateToken(user);
+            Customer tmpCust = await _context.Customers.FirstAsync(cust => cust.Username == request.Username);
 
+            result.CustomerId = tmpCust.CustomerId;
+            result.Token = CreateToken(user);
 
-            return Ok(token);
+            //return token + customerId + time for token to live as LoginDTO object
+            return Ok(result);
 
         }
 

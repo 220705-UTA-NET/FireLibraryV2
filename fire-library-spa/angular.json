@@ -70,7 +70,7 @@
               "browserTarget": "fire-library-spa:build:development"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "production"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -97,5 +97,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "991ea0ca-79d1-4741-8101-63d6a76fe4c0"
   }
 }

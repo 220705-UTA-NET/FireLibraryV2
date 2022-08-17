@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Cors;
 
 namespace FireLibrary2.Controllers
 {
-    [EnableCors("_myAllowSpecificOrigins")]
+    [EnableCors]
     [Route("api/Orders")]
     [ApiController]
     public class OrderController : ControllerBase
@@ -101,6 +101,22 @@ namespace FireLibrary2.Controllers
 
             //Returns 200OK along with returned book count. 
             return Ok($"You have returned {request.Books.Count()} books!");
+        }
+
+        [HttpPost("returnbook")]
+        public async Task<ActionResult> ReturnOneBook(ReturnDTO bookToReturn)
+        {
+            try
+            {
+                await _repo.ReturnOneBookAsync(bookToReturn);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+            }
+
+            //Returns 200OK along with returned book count. 
+            return Ok("Book returned!");
         }
 
     }

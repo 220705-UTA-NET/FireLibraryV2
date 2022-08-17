@@ -7,6 +7,10 @@ import { HomeComponent } from './home/home.component';
 import { TopComponent } from './top/top.component';
 import { BooksComponent } from './books/books.component';
 import { TemplateComponent } from './template/template.component';
+import { AuthService } from './auth/auth.service';
+import { LoginComponent } from './auth/login/login.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MyBooksComponent } from './my-books/my-books.component';
 
 @NgModule({
   declarations: [
@@ -14,14 +18,18 @@ import { TemplateComponent } from './template/template.component';
     HomeComponent,
     TopComponent,
     BooksComponent,
-    TemplateComponent
+    TemplateComponent,
+    LoginComponent,
+    MyBooksComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [AuthService],
   exports:[AppRoutingModule],
   bootstrap: [AppComponent]
 })
