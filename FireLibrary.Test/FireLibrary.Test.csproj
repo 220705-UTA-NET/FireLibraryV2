@@ -21,11 +21,16 @@
     </PackageReference>
     <PackageReference Include="EntityFramework" Version="6.4.4" />
     <PackageReference Include="Moq" Version="4.18.2" />
+    <PackageReference Include="coverlet.msbuild" Version="3.1.2">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="EntityFramework" />
     <None Remove="Moq" />
+    <None Remove="coverlet.msbuild" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FireLibrary2\FireLibrary2.csproj" />
