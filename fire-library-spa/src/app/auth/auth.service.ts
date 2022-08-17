@@ -1,9 +1,9 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Subject } from "rxjs";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { Router } from "@angular/router";
 
-@Injectable()
+@Injectable({providedIn:'root'})
 export class AuthService{
     //change firelibraryv2 to firelibrarydocker.azur...
     private login_url = 'https://firelibrarydocker.azurewebsites.net/api/UsersControllerTest/login';
@@ -12,7 +12,7 @@ export class AuthService{
     private token: string|null = null;
     private customerId:number = -1;
     private time2live:number = -1;
-    private authStatusListener = new Subject<boolean>();
+    private authStatusListener = new BehaviorSubject<boolean>(false);
     constructor(private http: HttpClient, private router:Router){}
     getToken(){
         return this.token;
@@ -36,16 +36,18 @@ export class AuthService{
     login(username:string, password:string){
         var myheaders = new HttpHeaders();
         myheaders.append("Content-Type","application/json")
-        console.log(username);
-        console.log(password);
+        //console.log(username);
+        //console.log(password);
         const data = {username:username, password:password}
         //this.http.post<any>(this.login_url, data, {"headers":myheaders}).subscribe(resp=>{
             this.http.post<any>(this.login_url, data).subscribe(resp=>{
-            console.log(resp);
+            //console.log(resp);
             this.token = resp.token;
             this.customerId = resp.customerId;
             this.time2live = resp.timeInSecs;
         })
+        this.isAuthenticated = true;
+        this.authStatusListener.next(true);
         this.router.navigate(['/home']);
     }
     logout(){
