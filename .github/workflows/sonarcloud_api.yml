@@ -41,17 +41,11 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"220705-UTA-NET_FireLibraryV2" /o:"220705-uta-net" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"220705-UTA-NET_FireLibraryV2" /o:"220705-uta-net" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" 
           
-           echo building project
+
           dotnet build ./FireLibraryV2
-          echo trying to run tests
-          dotnet test ./FireLibrary.Test/FireLibrary.Test.csproj `
-          --collect:"XPlat Code Coverage" `
-          --results-directory TestResults/ `
-          --logger "trx;LogFileName=unittests.trx" `
-          --configuration release `
-          -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
 
   sonarcloud:
