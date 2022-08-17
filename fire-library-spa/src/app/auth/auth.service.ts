@@ -23,6 +23,9 @@ export class AuthService{
     getAuthStatusListener(){
         return this.authStatusListener.asObservable();
     }
+    getId():number{
+        return this.customerId;
+    }
     createUser(username:string, password:string){
         const data = {username:username, password:password}
         this.http.post<any>(this.register_url, data).subscribe(resp=>{
@@ -41,7 +44,7 @@ export class AuthService{
         const data = {username:username, password:password}
         //this.http.post<any>(this.login_url, data, {"headers":myheaders}).subscribe(resp=>{
             this.http.post<any>(this.login_url, data).subscribe(resp=>{
-            //console.log(resp);
+            console.log(resp);
             this.token = resp.token;
             this.customerId = resp.customerId;
             this.time2live = resp.timeInSecs;

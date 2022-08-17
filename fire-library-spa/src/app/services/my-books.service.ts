@@ -10,6 +10,9 @@ export class MyBooksService {
   constructor(private http:HttpClient){}
   getBooksFromOrder(url:string): Observable<Order[]>{
     return this.http.get<Order[]>(url);
-}
+  }
+  postReturnBook(postReturnurl:string,orderid:number,isbn:string){
+    return this.http.post(postReturnurl,{orderId:orderid,isbn:isbn},{responseType:'text'});
+  }
   
 }
