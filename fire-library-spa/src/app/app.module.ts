@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import {HttpClientModule} from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
@@ -8,6 +10,8 @@ import { TopComponent } from './top/top.component';
 import { BooksComponent } from './books/books.component';
 import { TemplateComponent } from './template/template.component';
 import { MyBooksComponent } from './my-books/my-books.component';
+import { SearchBooksComponent } from './search-books/search-books.component';
+import { SearchBooksResultComponent } from './search-books-result/search-books-result.component';
 
 @NgModule({
   declarations: [
@@ -16,12 +20,16 @@ import { MyBooksComponent } from './my-books/my-books.component';
     TopComponent,
     BooksComponent,
     TemplateComponent,
-    MyBooksComponent
+    MyBooksComponent,
+    SearchBooksComponent,
+    SearchBooksResultComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [],
   exports:[AppRoutingModule],

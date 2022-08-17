@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 
 // import { CartService } from '../cart.service';
 
@@ -10,20 +11,24 @@ import { FormBuilder } from '@angular/forms';
 })
 export class SearchBooksComponent implements OnInit {
 
-  // searchForm = this.formBuilder.group({
-  //   searchBy: '',
-  //   searchFor: ''
-  // });
+  // https://firelirbraryv2.azurewebsites.net/api/Books/search/genre?genre=fiction
+  searchUrl ="http://localhost:4200/searchBooksResult";
 
-  // constructor(private formBuilder: FormBuilder) { }
-  constructor() { }
+  searchForm = this.formBuilder.group({
+    searchBy: '',
+    searchFor: ''
+  });
+
+  constructor(private formBuilder: FormBuilder) { }
+  // constructor() { }
 
   ngOnInit(): void {
   }
 
   onSubmit(): void {
     // Process search data here
-    // console.warn('Your order has been submitted', this.searchForm.value);
-    // this.searchForm.reset();
+
+    console.warn('Your request will be submitted', this.searchForm.value);
+    this.searchForm.reset();
   }
 }

@@ -1,6 +1,6 @@
-<p>search-books form will be here!</p>
-<!-- <form name="searchForm" (ngSubmit)="onSubmit()">
+<p>Please enter your search parameters</p>
 
+<!-- <form [formGroup]="searchForm" [action]="searchUrl" method="GET" (ngSubmit)="onSubmit()">
     <div>
       <label for="searchBy">
         searchBy
@@ -17,4 +17,21 @@
   
     <button class="button" type="submit">Search</button>
   
-  </form> -->
+</form> -->
+
+<!-- This for really goes to /searchBooksResult page on click -->
+<form #form action='http://localhost:4200/searchBooksResult' method="GET">
+  <div>
+    <label for="searchBy">
+      searchBy
+    </label>
+    <input name="searchBy" type="text">
+  </div>
+  <div>
+    <label for="searchFor">
+      searchFor
+    </label>
+    <input name="searchFor" type="text">
+  </div>
+  <button type="submit" class="button" (click)="form.submit()">Search</button>
+</form>
