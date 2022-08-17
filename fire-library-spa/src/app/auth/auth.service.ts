@@ -10,6 +10,8 @@ export class AuthService{
     private register_url = 'https://firelibrarydocker.azurewebsites.net/api/UsersControllerTest/register';
     private isAuthenticated = false;
     private token: string|null = null;
+    private customerId:number = -1;
+    private time2live:number = -1;
     private authStatusListener = new Subject<boolean>();
     constructor(private http: HttpClient, private router:Router){}
     getToken(){
@@ -25,8 +27,11 @@ export class AuthService{
         const data = {username:username, password:password}
         this.http.post<any>(this.register_url, data).subscribe(resp=>{
             console.log(resp);
-            this.token = resp;
+            this.token = resp.token;
+            this.customerId = resp.customerId;
+            this.time2live = resp.timeInSecs;
         })
+        this.router.navigate(['/home']);
     }
     login(username:string, password:string){
         var myheaders = new HttpHeaders();
@@ -37,7 +42,9 @@ export class AuthService{
         //this.http.post<any>(this.login_url, data, {"headers":myheaders}).subscribe(resp=>{
             this.http.post<any>(this.login_url, data).subscribe(resp=>{
             console.log(resp);
-            this.token = resp;
+            this.token = resp.token;
+            this.customerId = resp.customerId;
+            this.time2live = resp.timeInSecs;
         })
         this.router.navigate(['/home']);
     }
