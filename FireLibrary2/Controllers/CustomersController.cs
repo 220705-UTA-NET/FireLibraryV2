@@ -56,7 +56,7 @@ namespace FireLibrary2.Controllers
         public async Task<ActionResult<CustomerDTO>> GetCustomer(int id)
         {
             CustomerDTO result = new();
-
+          
             try
             {
                 result = await _repo.GetCustomerByIdAsync(id);
@@ -71,7 +71,8 @@ namespace FireLibrary2.Controllers
                 _logger.LogError(e, e.Message);
                 return StatusCode(500);
             }
-
+            Console.WriteLine("We are in Customer controller");
+            Console.WriteLine(result.CustomerId);
             return Ok(result);
         }
 

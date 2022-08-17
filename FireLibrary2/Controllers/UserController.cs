@@ -19,12 +19,12 @@ namespace FireLibrary2.Controllers
     [EnableCors("_myAllowSpecificOrigins")]
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersControllerTest : ControllerBase
+    public class UsersController : ControllerBase
     {
         private readonly DataContext _context;
         private readonly IConfiguration _configuration;
 
-        public UsersControllerTest(IConfiguration configuration, DataContext context)
+        public UsersController(IConfiguration configuration, DataContext context)
         {
             _configuration = configuration;
             _context = context;

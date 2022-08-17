@@ -46,7 +46,7 @@ namespace FireLibrary2.Controllers
                 _logger.LogError(e, e.Message);
                 return StatusCode(500);
             }
-
+            
 
             return result;
         }
@@ -71,7 +71,7 @@ namespace FireLibrary2.Controllers
                 _logger.LogError(e, e.Message);
                 return StatusCode(500);
             }
-
+            Console.WriteLine("We are in Books Controller");
             return result;
         }
 
