@@ -1,31 +1,50 @@
 <p>Please enter your search parameters</p>
 
-<!-- <form [formGroup]="searchForm" [action]="searchUrl" method="GET" (ngSubmit)="onSubmit()">
+<form [formGroup]="searchForm" [action]="searchUrl" method="GET" (ngSubmit)="onSubmit()">
     <div>
       <label for="searchBy">
         searchBy
       </label>
-      <input id="searchBy" type="text" formControlName="searchBy">
+      <select id="searchBy" name="searchBy"  formControlName="searchBy">
+        <option value="isbn" selected>ISBN</option>
+        <option value="genre">Genre</option>
+        <option value="author">Author</option>
+        <option value="title">Title</option>
+      </select>
     </div>
-  
     <div>
       <label for="searchFor">
         searchFor
       </label>
       <input id="searchFor" type="text" formControlName="searchFor">
     </div>
-  
     <button class="button" type="submit">Search</button>
-  
-</form> -->
+</form>
+<br/>
+<div>
+  <div *ngFor="let item of books" class="books" style="margin-bottom: 50px;">
+      <img src="https://covers.openlibrary.org/b/isbn/{{item.isbn}}-M.jpg" />
+      <ul>
+      <li>isbn: {{item.isbn}}</li>
+      <li>Title: {{item.title}}</li>
+      <li>Publisher: {{item.publisher}}</li>
+      <li>Language: {{item.language}}</li>
+      <li>Pages: {{item.pages}}</li>
+      <li>AuthorName: {{item.authorName}}</li>
+      <li>Synopsys: {{item.synopsys}}</li>
+      <li>Excerpt: {{item.excerpt}}</li>
+      <li>TotalCopies: {{item.totalCopies}}</li>
+      <li>AvalableCopies: {{item.avalableCopies}}</li>
+      </ul>
+  </div>
+</div>
 
 <!-- This for really goes to /searchBooksResult page on click -->
-<form #form action='http://localhost:4200/searchBooksResult' method="GET">
+<!-- <form #form action='http://localhost:4200/searchBooksResult' method="GET">
   <div>
     <label for="searchBy">
       searchBy
     </label>
-    <!-- <input name="searchBy" type="text"> -->
     <select name="searchBy">
       <option value="isbn">ISBN</option>
       <option value="genre">Genre</option>
@@ -40,4 +59,4 @@
     <input name="searchFor" type="text">
   </div>
   <button type="submit" class="button" (click)="form.submit()">Search</button>
-</form>
+</form> -->
