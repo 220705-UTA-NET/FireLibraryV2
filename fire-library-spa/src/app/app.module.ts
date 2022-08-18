@@ -13,6 +13,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MyBooksComponent } from './my-books/my-books.component';
 import { CartComponent } from './cart/cart.component';
 import { SignupComponent } from './auth/signup/signup.component';
+import { SearchBooksComponent } from './search-books/search-books.component';
+
 
 @NgModule({
   declarations: [
@@ -24,7 +26,9 @@ import { SignupComponent } from './auth/signup/signup.component';
     LoginComponent,
     MyBooksComponent,
     CartComponent,
-    SignupComponent
+    SignupComponent,
+    MyBooksComponent,
+    SearchBooksComponent
   ],
   imports: [
     BrowserModule,
