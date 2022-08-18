@@ -18,8 +18,8 @@ export class SearchBooksComponent implements OnInit {
     searchFor: ''
   });
   books : Book[] = [];
-  private url:string = "https://firelirbraryv2.azurewebsites.net/api/Books/search/";
-
+  private url:string = "https://firelibrarydocker.azurewebsites.net/api/Books/search/"
+ //"https://firelirbraryv2.azurewebsites.net/api/Books/search/";
   constructor(private formBuilder: FormBuilder, private searchBooksService:SearchBooksService) { }
   // constructor() { }
 
