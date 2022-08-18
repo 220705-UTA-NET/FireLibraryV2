@@ -1,7 +1,6 @@
 <div>
-    <div *ngFor="let item of myOrders" class="books" style="margin-bottom: 50px;">
         <!-- We can put anything here like {{item.dateLent}} -->
-        <ul class="books" *ngFor="let book of item.books">
+        <ul class="books" *ngFor="let book of booksInCart">
             <img src="https://covers.openlibrary.org/b/isbn/{{book.isbn}}-M.jpg" />
             <li>isbn: {{book.isbn}}</li>
             <li>Title: {{book.title}}</li>
@@ -13,8 +12,11 @@
             <li>Excerpt: {{book.excerpt}}</li>
             <li>TotalCopies: {{book.totalCopies}}</li>
             <li>AvalableCopies: {{book.avalableCopies}}</li>
-            <button (click)="onClickReturn(book,item.orderId)">Return this book</button>
         </ul>
-        
-    </div>
+        <span *ngIf="booksInCart.length > 0">
+            <button (click)="onCheckout()">checkout books</button>
+        </span>
+        <span *ngIf="booksInCart.length == 0">
+            Cart is empty. please follow this link to start adding books <a routerLink="/home">books</a>
+        </span>
 </div> 
