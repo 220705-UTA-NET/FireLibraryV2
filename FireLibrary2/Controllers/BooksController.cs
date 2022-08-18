@@ -106,7 +106,7 @@ namespace FireLibrary2.Controllers
 
             try
             {
-                result = await _repo.SearchBooksGenreAsync(author.ToLower());
+                result = await _repo.SearchBooksAuthorAsync(author.ToLower());
 
                 if (result == null)
                 {
@@ -129,7 +129,7 @@ namespace FireLibrary2.Controllers
 
             try
             {
-                result = await _repo.SearchBooksGenreAsync(title.ToLower());
+                result = await _repo.SearchBooksTitleAsync(title.ToLower());
 
                 if (result == null)
                 {
