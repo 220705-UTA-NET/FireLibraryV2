@@ -11,7 +11,6 @@ import { BooksComponent } from './books/books.component';
 import { TemplateComponent } from './template/template.component';
 import { MyBooksComponent } from './my-books/my-books.component';
 import { SearchBooksComponent } from './search-books/search-books.component';
-import { SearchBooksResultComponent } from './search-books-result/search-books-result.component';
 
 @NgModule({
   declarations: [
@@ -21,8 +20,7 @@ import { SearchBooksResultComponent } from './search-books-result/search-books-r
     BooksComponent,
     TemplateComponent,
     MyBooksComponent,
-    SearchBooksComponent,
-    SearchBooksResultComponent
+    SearchBooksComponent
   ],
   imports: [
     BrowserModule,
