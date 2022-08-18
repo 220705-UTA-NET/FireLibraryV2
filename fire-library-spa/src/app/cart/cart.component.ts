@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import {CartService} from '../services/cart.service';
 import { Book } from '../Models/book';
 import { Checkout } from '../Models/checkout';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cart',
@@ -16,9 +17,8 @@ export class CartComponent implements OnInit {
   private checkout:Checkout|null = null;
   customerId = -1;
   loggedIn = false;
-  //private url:string = "https://firelirbraryv2.azurewebsites.net/api/Customer/Orders?customerId="; // TODO: dynamically populate customerId here
   private url:string = "https://firelibrarydocker.azurewebsites.net/api/orders";
-  constructor(private cart:CartService, private auth:AuthService) { 
+  constructor(private cart:CartService, private auth:AuthService,private router:Router) { 
     this.authListener = this.auth.getAuthStatusListener().subscribe(value=>{
       this.loggedIn = value;
       this.customerId = auth.getId();
@@ -34,7 +34,9 @@ export class CartComponent implements OnInit {
     console.log("we called onCHeckout");
     console.log(this.checkout);
     this.cart.postOrder(this.url,this.checkout!).subscribe((res) => {
-      console.log(res);
+      console.log(res);//assumed it worked for now
     })
+    this.cart.clearCart();
+    this.router.navigate(['/home']);
   }
 }

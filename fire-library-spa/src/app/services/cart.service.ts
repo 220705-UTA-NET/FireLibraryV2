@@ -22,4 +22,8 @@ export class CartService{
     postOrder(posturl:string,data:Checkout){
         return this.http.post(posturl,data,{responseType:'text'});
     }
+    clearCart(){
+        this.books = [];
+        this.bookListener.next([]);
+    }
 }
