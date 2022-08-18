@@ -6,12 +6,6 @@ on:
       - dev
     paths:
       - './fire-library-spa/'
-  pull_request:
-    branches:
-      - main
-      - dev
-    paths:
-      - './fire-library-spa/'
   workflow_dispatch:
 jobs:
   build:
