@@ -6,8 +6,8 @@ import { Router } from "@angular/router";
 @Injectable()
 export class AuthService{
     //change firelibraryv2 to firelibrarydocker.azur...
-    private login_url = 'https://firelibrarydocker.azurewebsites.net/api/UsersControllerTest/login';
-    private register_url = 'https://firelibrarydocker.azurewebsites.net/api/UsersControllerTest/register';
+    private login_url = 'https://firelibrarydocker.azurewebsites.net/api/Users/login';
+    private register_url = 'https://firelibrarydocker.azurewebsites.net/api/Users/register';
     private isAuthenticated = false;
     private token: string|null = null;
     private customerId:number = -1;

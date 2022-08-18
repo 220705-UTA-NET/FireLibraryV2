@@ -37,6 +37,7 @@ export class MyBooksComponent implements OnInit, OnDestroy {
     console.log(orderid);
     this.myBooksService.postReturnBook(this.returnBookurl, orderid,book.isbn).subscribe((res)=>{
       console.log(res);
+      this.ngOnInit();
     });
   }
 }
