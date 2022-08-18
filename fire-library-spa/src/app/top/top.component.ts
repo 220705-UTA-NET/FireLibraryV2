@@ -22,5 +22,7 @@ export class TopComponent implements OnInit {
   ngOnDestroy(): void {
     this.authListener?.unsubscribe();
   }
-
+  onLogout(){
+    this.auth.logout();
+  }
 }

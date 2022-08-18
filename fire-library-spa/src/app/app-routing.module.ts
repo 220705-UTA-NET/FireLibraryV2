@@ -5,13 +5,15 @@ import { MyBooksComponent } from './my-books/my-books.component';
 import { TemplateComponent } from './template/template.component';
 import { LoginComponent } from './auth/login/login.component';
 import { CartComponent } from './cart/cart.component';
+import { SignupComponent } from './auth/signup/signup.component';
 const routes: Routes = [
   {path: '',pathMatch:'full', redirectTo:'home'},
   {path: 'home', component: HomeComponent},
   {path: 'myBooks', component: MyBooksComponent},
   {path: 'template', component: TemplateComponent},
   {path: 'login', component: LoginComponent},
-  {path: 'cart', component: CartComponent}
+  {path: 'cart', component: CartComponent},
+  {path: 'signup', component: SignupComponent}
 ];
 
 @NgModule({

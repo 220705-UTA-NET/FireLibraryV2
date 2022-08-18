@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { Router } from "@angular/router";
 
-@Injectable({providedIn:'root'})
+@Injectable()
 export class AuthService{
     //change firelibraryv2 to firelibrarydocker.azur...
     private login_url = 'https://firelibrarydocker.azurewebsites.net/api/UsersControllerTest/login';
