@@ -48,11 +48,17 @@ export class AuthService{
             this.token = resp.token;
             this.customerId = resp.customerId;
             this.time2live = resp.timeInSecs;
+            
+            if(this.token == null){
+                return;
+            }
+
+            this.isAuthenticated = true;
+            this.authStatusListener.next(true);
+            this.router.navigate(['/home']);
         })
-        this.isAuthenticated = true;
-        this.authStatusListener.next(true);
-        this.router.navigate(['/home']);
     }
+
     logout(){
         this.token = null;
         this.isAuthenticated = false;
