@@ -27,9 +27,16 @@ export class SearchBooksResultComponent implements OnInit {
 
   ngOnInit(): void {
     let searchUrl = this.url + this.searchBy + "?" + this.searchBy + "=" + this.searchFor;
-    this.searchBooksService.getAllBooks(searchUrl).subscribe((Res) => {
-      this.books = Res;
-    });
+    if (this.searchBy == "isbn") {
+      this.searchBooksService.getSingleBook(searchUrl).subscribe((Res) => {
+        this.books = [Res];
+      });
+    } else {
+      this.searchBooksService.getAllBooks(searchUrl).subscribe((Res) => {
+        this.books = Res;
+      });
+    }
+
   }
 
 }
