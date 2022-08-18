@@ -1,8 +1,7 @@
-<app-top></app-top>
 
 <p>Please enter your search parameters</p>
 
-<form [formGroup]="searchForm" [action]="searchUrl" method="GET" (ngSubmit)="onSubmit()">
+<form [formGroup]="searchForm">
     <div>
       <label for="searchBy">
         searchBy
@@ -20,7 +19,7 @@
       </label>
       <input id="searchFor" type="text" formControlName="searchFor">
     </div>
-    <button class="button" type="submit">Search</button>
+    <button class="button" (click)="onSubmit()">Search</button>
 </form>
 <br/>
 <div>
@@ -38,6 +37,7 @@
       <li>TotalCopies: {{item.totalCopies}}</li>
       <li>AvalableCopies: {{item.avalableCopies}}</li>
       </ul>
+      <div *ngIf="loggedIn"><button (click)="addBook(item)">add</button></div>
   </div>
 </div>
 

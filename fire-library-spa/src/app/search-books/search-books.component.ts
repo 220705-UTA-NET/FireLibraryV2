@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import { AuthService } from '../auth/auth.service';
 
 import { Book } from '../Models/book';
+import { CartService } from '../services/cart.service';
 import { SearchBooksService } from '../services/search-books-result.service';
 
 @Component({
@@ -9,10 +12,10 @@ import { SearchBooksService } from '../services/search-books-result.service';
   templateUrl: './search-books.component.html',
   styleUrls: ['./search-books.component.css']
 })
-export class SearchBooksComponent implements OnInit {
+export class SearchBooksComponent implements OnInit, OnDestroy {
 
-  searchUrl = "https://fire-library-spa.azurewebsites.net/searchBooksResult";
-  //"http://localhost:4200/searchBooksResult";
+  public loggedIn = false;
+  private authListener: Subscription|null = null;
 
   searchForm = this.formBuilder.group({
     searchBy: '',
@@ -20,8 +23,11 @@ export class SearchBooksComponent implements OnInit {
   });
   books : Book[] = [];
   private url:string = "https://firelibrarydocker.azurewebsites.net/api/Books/search/"
- //"https://firelirbraryv2.azurewebsites.net/api/Books/search/";
-  constructor(private formBuilder: FormBuilder, private searchBooksService:SearchBooksService) { }
+  constructor(private formBuilder: FormBuilder, private searchBooksService:SearchBooksService,private auth:AuthService, private cart:CartService) {
+    this.authListener = this.auth.getAuthStatusListener().subscribe(value=>{
+      this.loggedIn = value;
+    })
+   }
   // constructor() { }
 
   ngOnInit(): void {
@@ -46,5 +52,16 @@ export class SearchBooksComponent implements OnInit {
       });
     }
     this.searchForm.reset();
+  }
+  addBook(book:Book){
+    
+    var index = this.cart.getBooksInCart().findIndex(a => a.isbn == book.isbn);
+    if(index < 0){//only add if book does not exists | basically look for book and get the index | findIndex returns -1 when not found
+      this.cart.addToCart(book);
+      console.log(this.cart.getBooksInCart());
+    }
+  }
+  ngOnDestroy(): void {
+    this.authListener?.unsubscribe();
   }
 }

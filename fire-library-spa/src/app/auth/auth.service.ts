@@ -34,7 +34,7 @@ export class AuthService{
             this.customerId = resp.customerId;
             this.time2live = resp.timeInSecs;
         })
-        this.router.navigate(['/home']);
+        this.router.navigate(['/login']);
     }
     login(username:string, password:string){
         var myheaders = new HttpHeaders();
