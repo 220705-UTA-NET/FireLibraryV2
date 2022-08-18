@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Book } from '../Models/book';
-import { SearchBooksService } from '../services/search-books.service';
+import { SearchBooksService } from '../services/search-books-result.service';
 
 @Component({
   selector: 'app-search-books-result',
