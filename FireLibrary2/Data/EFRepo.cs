@@ -192,13 +192,23 @@ namespace FireLibrary2.Data
             {
                 //finds book in DB
                 var book = await _context.Books.FindAsync(i.Isbn);
-
+                book.AvalableCopies -= 1;
                 //Makes sure there are availble copies of the book
                 if (book.AvalableCopies == 0)
                 {
                     return "availability";
                 }
 
+                _context.Books.Update(book);
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateException)
+                {
+
+                }
 
                 //Adds the book to the List<Book> that we will insert into the new order
                 books.Add(book);
@@ -211,6 +221,8 @@ namespace FireLibrary2.Data
 
             //incrementing customer bookcount           
             customer.BookCount += order.Books.Count();
+
+
 
             //Adding the order model, updating the customer 
             _context.Orders.Add(order);
@@ -268,6 +280,18 @@ namespace FireLibrary2.Data
 
                 //Remove book from bookcount.
                 customer.BookCount -= 1;
+
+                _context.Books.Update(tmpBook);
+
+                    try
+                {
+                   await _context.SaveChangesAsync();
+                }
+                    catch (DbUpdateException e)
+                {
+                    _logger.LogError(e, e.Message);
+                }
+                
             }
 
             //Removing books to remove from the order book list
@@ -293,9 +317,11 @@ namespace FireLibrary2.Data
             Order order = await _context.Orders.FindAsync(bookToReturn.orderId);
             Customer customer = await _context.Customers.FindAsync(order.CustomerId);
 
+            book.AvalableCopies += 1;
             order.Books.RemoveAll(b => b.Isbn == bookToReturn.isbn);
             customer.BookCount -= 1;
-
+            
+            _context.Books.Update(book);
             _context.Orders.Update(order);
             _context.Customers.Update(customer);
 
