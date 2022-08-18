@@ -14,28 +14,26 @@ FireLibrary is a web application that will simulate a full library portal. Custo
 - ~Add Sonarcloud static analysis to the project and include it in the CI/CD Pipeline by EOD 8/9.~
 - ~Add Angular SPA skeleton (with DevOps pipeline) by EOD 8/9.~ - 
 - ~Working Server by EOD 8/11.~
-- Angular SPA done by EOD 8/14.
-- Create and publish Docker images on DockerHub by EOD 8/14.
-- **MVP achieved by EOD 8/14.**
-  - User account creation/login.
-  - Book lookup by Title/ISBN/Genre/etc.
-  - Looking up Authors, listing all their books.
-  - Tracking user orders, with time tracking for lent items.
-  - Stopping users with overdue items from borrowing further items.
-  - Linking to ebooks when available. 
-- **Stretch Goals**
-  - Database pagination for book GET requests. 
-  - User authentication handled with OAuth or OAuth2, eliminating the simple auth DB
-  - Displaying books as thumbnails that can display more books OnClick.
-  - Rewrite ado.net portions with Entity Framework
+- ~Angular SPA done by EOD 8/14.~
+- ~Create and publish Docker images on DockerHub by EOD 8/14.~
+- ~**MVP achieved by EOD 8/14.**~
+  - ~User account creation/login.~
+  - ~Book lookup by Title/ISBN/Genre/etc.~
+  - ~Looking up Authors, listing all their books.~
+  - ~Tracking user orders, with time tracking for lent items.~
+  - ~Stopping users with overdue items from borrowing further items.~
+  - ~Linking to ebooks when available.~ 
+- ~**Stretch Goals**~
+  - ~User authentication handled with OAuth or OAuth2, eliminating the simple auth DB~
+  - ~Rewrite ado.net portions with Entity Framework~
   
  #### User Stories
- 1. As a user I want to create an account.
- 2. As a user I want to search for a specific book.
- 3. As a user, I want to search for books by genre.
- 4. As a user, I want to see the status of my order/loan.
- 5. As a user, I want to view an overview of my account.
- 6. User is blocked from checking out book due to late fees. 
+ 1. ~As a user I want to create an account.~
+ 2. ~As a user I want to search for a specific book.~
+ 3. ~As a user, I want to search for books by genre.~
+ 4. ~As a user, I want to see the status of my order/loan.~
+ 5. ~As a user, I want to view an overview of my account.~
+ 6. ~User is blocked from checking out book due to late fees.~
 
 ### Technical Specifications
 - Authentication DB built with SQL Server, hosted on Azure.
