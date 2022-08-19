@@ -6,9 +6,6 @@
     transform: scale();
     object-fit: contain;
 }
-.books data{
-    float: left;
-}
 
 .container{
     display: grid;
@@ -22,11 +19,11 @@
     font-size: small;
     float: left;
     width: fit-content;
-    transform: scale(.9);
     margin-bottom: 0;
-    outline: 3px solid black;
-    background-color: #2A9D8F;
-    width: fit-content;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    grid-gap: 1rem;
+    background-color:#E76F51;
 }
 
 div.books {
@@ -34,18 +31,14 @@ div.books {
     justify-content: center;
 }
 
-div.book {
-    justify-content: center;
-    background-color: #2A9D8F;
-    height: 100%;
-}
-
-.books {
-    background-color: #2A9D8F;
-    width: fit-content;
-}
-
 ul {
     list-style-type: none;
     margin: 0; padding: 0;
+}
+
+ul.book {
+    margin-bottom: 0;
+    outline: 3px solid black;
+    background-color: #2A9D8F;
+    width: fit-content;
 }
