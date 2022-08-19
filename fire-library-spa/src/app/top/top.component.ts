@@ -5,7 +5,7 @@ import { AuthService } from '../auth/auth.service';
 @Component({
   selector: 'app-top',
   templateUrl: './top.component.html',
-  styleUrls: ['../app.component.css']
+  styleUrls: ['./top.component.css']
 })
 export class TopComponent implements OnInit {
   private authListener : Subscription | null = null;
