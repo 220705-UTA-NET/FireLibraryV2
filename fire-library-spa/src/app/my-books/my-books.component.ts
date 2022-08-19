@@ -28,8 +28,22 @@ export class MyBooksComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.myBooksService.getBooksFromOrder(this.url+this.customerId).subscribe((Res) => {
       this.myOrders = Res;
+      
+      let displayOrders: Order[] = []
+      
+      for(let i = 0; i < this.myOrders.length; i++){
+        let books: Book[] = this.myOrders[i].books;
+        console.log(books)
+        if(books.length > 0){
+          displayOrders.push(this.myOrders[i])
+        }
+      }
+      this.myOrders = displayOrders
+      console.log(this.myOrders)
+        
     });
   }
+
   ngOnDestroy(): void {
     this.authListener?.unsubscribe();
   }
